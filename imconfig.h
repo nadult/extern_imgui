@@ -6,8 +6,10 @@
 
 #pragma once
 
+#include "fwk/math_base.h"
+
 //---- Define assertion handler. Defaults to calling assert().
-//#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
+#define IM_ASSERT(_EXPR)  DASSERT(_EXPR)
 
 //---- Define attributes of all API symbols declarations, e.g. for DLL under Windows.
 //#define IMGUI_API __declspec( dllexport )
@@ -31,18 +33,24 @@
 //#define IMGUI_USE_BGRA_PACKED_COLOR
 
 //---- Implement STB libraries in a namespace to avoid conflicts
-//#define IMGUI_STB_NAMESPACE     ImGuiStb
+#define IMGUI_STB_NAMESPACE     imgui_stb
 
 //---- Define constructor and implicit cast operators to convert back<>forth from your math types and ImVec2/ImVec4.
-/*
-#define IM_VEC2_CLASS_EXTRA                                                 \
-        ImVec2(const MyVec2& f) { x = f.x; y = f.y; }                       \
-        operator MyVec2() const { return MyVec2(x,y); }
+#define IM_VEC2_CLASS_EXTRA                                                      \
+        ImVec2(const fwk::float2& f) { x = f.x; y = f.y; }                       \
+        ImVec2(const fwk::double2& f) { x = f.x; y = f.y; }                      \
+        ImVec2(const fwk::int2& f) { x = f.x; y = f.y; }                         \
+        operator fwk::float2() const { return {x,y}; }                           \
+        operator fwk::double2() const { return {x,y}; }                          \
+        operator fwk::int2() const { return fwk::int2(x,y); }
 
-#define IM_VEC4_CLASS_EXTRA                                                 \
-        ImVec4(const MyVec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
-        operator MyVec4() const { return MyVec4(x,y,z,w); }
-*/
+#define IM_VEC4_CLASS_EXTRA                                                      \
+        ImVec4(const fwk::float4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
+        ImVec4(const fwk::int4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }       \
+        ImVec4(const fwk::double4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }    \
+        operator fwk::float4() const { return {x,y,z,w}; }                       \
+        operator fwk::double4() const { return {x,y,z,w}; }                      \
+        operator fwk::int4() const { return fwk::int4(x,y,z,w); }
 
 //---- Use 32-bit vertex indices (instead of default: 16-bit) to allow meshes with more than 64K vertices
 //#define ImDrawIdx unsigned int
