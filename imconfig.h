@@ -42,7 +42,9 @@
         ImVec2(const fwk::int2& f) { x = f.x; y = f.y; }                         \
         operator fwk::float2() const { return {x,y}; }                           \
         operator fwk::double2() const { return {x,y}; }                          \
-        operator fwk::int2() const { return fwk::int2(x,y); }
+        operator fwk::int2() const { return fwk::int2(x,y); }                    \
+        ImVec2 operator+(const ImVec2 &rhs) { return {x + rhs.x, y + rhs.y}; }   \
+        ImVec2 operator-(const ImVec2 &rhs) { return {x - rhs.x, y - rhs.y}; }
 
 #define IM_VEC4_CLASS_EXTRA                                                      \
         ImVec4(const fwk::float4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
