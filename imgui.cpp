@@ -640,6 +640,7 @@ static void             AddWindowToSortedBuffer(ImVector<ImGuiWindow*>& out_sort
 static ImGuiIniData*    FindWindowSettings(const char* name);
 static ImGuiIniData*    AddWindowSettings(const char* name);
 static void             LoadIniSettingsFromDisk(const char* ini_filename);
+static void             UpdateIniSettings();
 static void             SaveIniSettingsToDisk(const char* ini_filename);
 static void             MarkIniSettingsDirty(ImGuiWindow* window);
 
@@ -2342,6 +2343,7 @@ void ImGui::NewFrame()
         g.MovedWindowMoveId = 0;
     }
 
+    UpdateIniSettings();
     // Delay saving settings so we don't spam disk too much
     if (g.SettingsDirtyTimer > 0.0f)
     {
@@ -2459,8 +2461,8 @@ void ImGui::Initialize()
     g.LogClipboard = (ImGuiTextBuffer*)ImGui::MemAlloc(sizeof(ImGuiTextBuffer));
     IM_PLACEMENT_NEW(g.LogClipboard) ImGuiTextBuffer();
 
-    IM_ASSERT(g.Settings.empty());
-    LoadIniSettingsFromDisk(g.IO.IniFilename);
+    if(g.Settings.empty())
+	    LoadIniSettingsFromDisk(g.IO.IniFilename);
     g.Initialized = true;
 }
 
@@ -2477,6 +2479,7 @@ void ImGui::Shutdown()
     if (!g.Initialized)
         return;
 
+    UpdateIniSettings();
     SaveIniSettingsToDisk(g.IO.IniFilename);
 
     for (int i = 0; i < g.Windows.Size; i++)
@@ -2597,13 +2600,9 @@ static void LoadIniSettingsFromDisk(const char* ini_filename)
     ImGui::MemFree(file_data);
 }
 
-static void SaveIniSettingsToDisk(const char* ini_filename)
+static void UpdateIniSettings()
 {
     ImGuiContext& g = *GImGui;
-    g.SettingsDirtyTimer = 0.0f;
-    if (!ini_filename)
-        return;
-
     // Gather data from windows that were active during this session
     for (int i = 0; i != g.Windows.Size; i++)
     {
@@ -2617,6 +2616,14 @@ static void SaveIniSettingsToDisk(const char* ini_filename)
         settings->Size = window->SizeFull;
         settings->Collapsed = window->Collapsed;
     }
+}
+
+static void SaveIniSettingsToDisk(const char* ini_filename)
+{
+    ImGuiContext& g = *GImGui;
+    g.SettingsDirtyTimer = 0.0f;
+    if (!ini_filename)
+        return;
 
     // Write .ini file
     // If a window wasn't opened in this session we preserve its settings
