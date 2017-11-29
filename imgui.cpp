@@ -3128,7 +3128,8 @@ void ImGui::RenderTriangle(ImVec2 p_min, ImGuiDir dir, float scale)
     switch (dir)
     {
     case ImGuiDir_Up:
-        r = -r; // ...fall through, no break!
+        r = -r;
+        [[fallthrough]];
     case ImGuiDir_Down:
         center.y -= r * 0.25f;
         a = ImVec2(0,1) * r;
@@ -3136,7 +3137,8 @@ void ImGui::RenderTriangle(ImVec2 p_min, ImGuiDir dir, float scale)
         c = ImVec2(+0.866f,-0.5f) * r;
         break;
     case ImGuiDir_Left:
-        r = -r; // ...fall through, no break!
+        r = -r;
+        [[fallthrough]];
     case ImGuiDir_Right:
         a = ImVec2(1,0) * r;
         b = ImVec2(-0.500f,+0.866f) * r;
